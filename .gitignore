@@ -1,5 +1,6 @@
 # Node files
-
+server/node_modules/**
+**/package-lock.json
 
 # Mac files
 **.DS_Store
