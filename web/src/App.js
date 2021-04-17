@@ -7,17 +7,23 @@ import {
 } from 'react-router-dom'
 import Home from './pages/home.js'
 import Settings from './pages/settings.js'
+import ViewPost from './pages/viewPost.js'
 import Top from './components/top.js'
 
 function App() {
+  const routes = [
+    { path: '/settings', component: <Settings /> },
+    { path: '/viewpost', component: <ViewPost /> },
+    { path: '/', component: <Home /> }
+
+  ]
   return (
     <div className="App">
       <Router>
         <Top />
 
         <Switch>
-          <Route path='/settings'><Settings /></Route>
-          <Route path='/'><Home /></Route>
+          { routes.map(route => <Route path={ route.path }>{ route.component }</Route> ) }
         </Switch>
       </Router>
     </div>

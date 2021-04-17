@@ -14,3 +14,30 @@
 .navlink {
   margin: 0 1em;
 }
+
+.preview {
+  width: 10em;
+  height: 14em;
+  border: 1px solid gray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+}
+
+.previewIframe {
+  width: 10em;
+  height: 8em;
+}
+
+.previewTitle {
+  margin-bottom: -0.5em;
+}
+
+.previewLayout {
+  width: 90%;
+  margin: auto;
+  display: flex;
+
+}
