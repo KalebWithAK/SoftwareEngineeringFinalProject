@@ -1,3 +1,7 @@
+# Private files
+# Contain information for connecting to the database, for example
+**.env
+
 # Node files
 server/node_modules/**
 **/package-lock.json
