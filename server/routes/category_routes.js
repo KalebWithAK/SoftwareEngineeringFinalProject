@@ -45,19 +45,19 @@ module.exports.create_category = (dbconn) => async (req, res) => {
         return
     }
 
-    // Make sure title is unique
-    if (await dbcat.category_exists(dbconn, req.body.title)) {
-        res.json({
-            error: 'Category name already taken',
-        })
-        return
-    }
-
     // Get the ID of the creator
     let creator_id = await dbuser.session_user_id(dbconn, req.body.session_key)
     if (creator_id < 0) {
         res.json({
             error: 'Failed to check creator id',
+        })
+        return
+    }
+
+    // Make sure title is unique
+    if (await dbcat.category_exists(dbconn, req.body.title)) {
+        res.json({
+            error: 'Category name already taken',
         })
         return
     }

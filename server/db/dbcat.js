@@ -1,3 +1,20 @@
+module.exports.get_category_from_id = async (dbconn, category_id) => {
+    try {
+        let results = await dbconn.query('SELECT category.id, category.title, user.name FROM (`category` LEFT OUTER JOIN `user` ON category.creator_id=user.id) WHERE `category_id`=?', [category_id])
+        if (results.length > 0) {
+            return {
+                category_id: results[0].id,
+                title: results[0].title,
+                creator_name: results[0].name,
+            }
+        }
+    } catch (e) {
+        console.error(`Failed to get category from id ${category_id}:`)
+        console.error(e)
+    }
+    return null
+}
+
 module.exports.category_exists = async (dbconn, title) => {
     try {
         let results = await dbconn.query('SELECT COUNT(*) FROM `category` WHERE `title`=?', [title])

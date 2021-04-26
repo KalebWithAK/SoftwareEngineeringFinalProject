@@ -105,5 +105,49 @@ module.exports = (dbpool) => {
             .all(user_routes.admin_required(dbpool))
             .put(category_routes.create_category(dbpool))
 
+    // Post routes
+
+    // Creating a post
+    //  Send a PUT request with the following JSON data:
+    //      {
+    //          "session_key": "SESSION KEY",
+    //          "category_id": CATEGORY ID,
+    //          "title": "POST TITLE",
+    //          "content": "POST CONTENT"
+    //      }
+    //  If the creation fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the creation succeeds, the returned JSON will be:
+    //      {
+    //          "post_id": NEW POST ID
+    //      }
+    router.route('/api/post/create')
+            .all(user_routes.auth_required(dbpool))
+            .put(post_routes.create_post(dbpool))
+
+    // Updating a post
+    //  Send a PUT request with the following JSON data (at least one of the
+    //  optionals is required):
+    //      {
+    //          "session_key": "SESSION KEY",   (Required)
+    //          "post_id": POST ID,             (Required)
+    //          "category_id": CATEGORY ID,     (Optional)
+    //          "title": "POST TITLE",          (Optional)
+    //          "content": "POST CONTENT"       (Optional)
+    //      }
+    //  If the creation fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the creation succeeds, the returned JSON will be:
+    //      {
+    //          "post_id": NEW POST ID
+    //      }
+    router.route('/api/post/update')
+            .all(user_routes.auth_required(dbpool))
+            .put(post_routes.update_post(dbpool))
+
     return router
 }
