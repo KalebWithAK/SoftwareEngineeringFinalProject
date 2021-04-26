@@ -68,6 +68,22 @@ module.exports = (dbpool) => {
     // Category routes
 
     // Listing categories
+    //  Send a GET request and the returned JSON will be:
+    //  {
+    //      "categories": [
+    //          {
+    //              "category_id": CATEGORY 1 ID,
+    //              "title": "CATEGORY 1 NAME",
+    //              "creator_name": "CATEGORY 1 CREATOR NAME"
+    //          },
+    //          {
+    //              "category_id": CATEGORY 2 ID,
+    //              "title": "CATEGORY 2 NAME",
+    //              "creator_name": "CATEGORY 2 CREATOR NAME"
+    //          },
+    //          ...
+    //      ]
+    //  }
     router.get('/api/category/list', category_routes.get_categories(dbpool))
 
     // Creating categories
@@ -82,7 +98,7 @@ module.exports = (dbpool) => {
     //      }
     //  If the creation succeeds, the returned JSON will be:
     //      {
-    //          "category_id": "NEW CATEGORY ID"
+    //          "category_id": NEW CATEGORY ID
     //      }
     router.route('/api/category/create')
             .all(user_routes.auth_required(dbpool))
