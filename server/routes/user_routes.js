@@ -44,14 +44,15 @@ module.exports.logout = (dbpool) => async (req, res) => {
 
 module.exports.create_user = (dbpool) => async (req, res) => {
     // Make sure required info is present
-    if (!req.body || !req.body.email || !req.body.password) {
+    if (!req.body || !req.body.email || !req.body.name || !req.body.password) {
         res.json({
-            error: 'Missing email and/or password in JSON request body',
+            error: 'Missing email, password, and/or name in JSON request body',
         })
         return;
     }
 
     let email = req.body.email
+    let name = req.body.name
     let password = req.body.password
 
     // Check if the email is already linked to an account
@@ -63,7 +64,7 @@ module.exports.create_user = (dbpool) => async (req, res) => {
     }
 
     // Try to register the user
-    if (await dbuser.register_user(dbpool, email, password)) {
+    if (await dbuser.register_user(dbpool, email, name, password)) {
         res.json({
             success: true,
         })
@@ -76,14 +77,6 @@ module.exports.create_user = (dbpool) => async (req, res) => {
 }
 
 module.exports.login = (dbpool) => async (req, res) => {
-    // Make sure required info is present
-    if (!req.body || !req.body.email || !req.body.password) {
-        res.json({
-            error: "Missing email and/or password in JSON request body",
-        })
-        return;
-    }
-
     // Make sure required info is present
     if (!req.body || !req.body.email || !req.body.password) {
         res.json({

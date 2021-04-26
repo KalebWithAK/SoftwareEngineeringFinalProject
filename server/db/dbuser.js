@@ -88,10 +88,23 @@ module.exports.verify_session = async (dbconn, session_key) => {
     return false
 }
 
+module.exports.session_user_id = async (dbconn, session_key) => {
+    try {
+        const sql = 'SELECT `user_id` FROM `session` WHERE `session_key`=? AND `expired`=0'
+        let results = await dbconn.query(sql, [session_key])
+        return results.length > 0 && results[0].user_id
+    } catch (e) {
+        console.error('Failed to verify session:')
+        console.error(e)
+    }
+    return -1
+}
+
 module.exports.is_admin = async (dbconn, session_key) => {
     try {
         const sql = 'SELECT user.admin FROM (`user` INNER JOIN `session` ON user.id=session.user_id) WHERE session.session_key=?'
         let results = await dbconn.query(sql, [session_key])
+        return results.length > 0 && results[0].admin
     } catch (e) {
         console.error('Failed to verify admin status:')
         console.error(e)

@@ -1,3 +1,6 @@
+const dbuser = require('../db/dbuser')
+const dbcat = require('../db/dbcat')
+
 module.exports.get_categories = (dbconn) => async (req, res) => {
     try {
         // Default limit to 50 if not provided
@@ -30,5 +33,46 @@ module.exports.get_categories = (dbconn) => async (req, res) => {
     }
     res.json({
         categories: []
+    })
+}
+
+module.exports.create_category = (dbconn) => async (req, res) => {
+    // Make sure the title was provided
+    if (!req.body.title) {
+        res.json({
+            error: 'Missing category title',
+        })
+        return
+    }
+
+    // Make sure title is unique
+    if (await dbcat.category_exists(dbconn, req.body.title)) {
+        res.json({
+            error: 'Category name already taken',
+        })
+        return
+    }
+
+    // Get the ID of the creator
+    let creator_id = await dbuser.session_user_id(dbconn, req.body.session_key)
+    if (creator_id < 0) {
+        res.json({
+            error: 'Failed to check creator id',
+        })
+        return
+    }
+
+    try {
+        // Insert the new category
+        const sql = 'INSERT INTO `category` (creator_id, title) VALUES (?, ?)'
+        let results = await dbconn.query(sql, [creator_id, req.body.title])
+        res.json({ category_id: results.insertId, })
+        return
+    } catch (e) {
+        console.error('Failed to create category:')
+        console.error(e)
+    }
+    res.json({
+        error: 'Failed to create category'
     })
 }

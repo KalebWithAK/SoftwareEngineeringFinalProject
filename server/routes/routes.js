@@ -70,10 +70,24 @@ module.exports = (dbpool) => {
     // Listing categories
     router.get('/api/category/list', category_routes.get_categories(dbpool))
 
-    router.route('/api/user/admintest')
+    // Creating categories
+    //  Send a PUT request with the following JSON data:
+    //      {
+    //          "session_key": "ADMIN SESSION KEY",
+    //          "title": "CATEGORY TITLE"
+    //      }
+    //  If the creation fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the creation succeeds, the returned JSON will be:
+    //      {
+    //          "category_id": "NEW CATEGORY ID"
+    //      }
+    router.route('/api/category/create')
             .all(user_routes.auth_required(dbpool))
             .all(user_routes.admin_required(dbpool))
-            .get((req, res) => res.send('hi'))
+            .put(category_routes.create_category(dbpool))
 
     return router
 }
