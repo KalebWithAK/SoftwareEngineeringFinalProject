@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 class Navbar extends React.Component {
     links = [
         { path: '/', text: 'home', id: 0 },
-        { path: '/settings', text: 'settings', id: 1 }
+        { path: '/creatorManagement', text: 'creator management', id: 1 },
+        { path: '/settings', text: 'settings', id: 2 },
     ]
 
     render() {
