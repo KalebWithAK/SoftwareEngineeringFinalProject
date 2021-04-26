@@ -10,6 +10,9 @@ MYSQL_DB_USERNAME=username for mysql server
 MYSQL_DB_PASSWORD=password for mysql server
 MYSQL_DB_NAME=name of database for the blog
 ```
+Now, to set up the tables, run the following SQL commands in your MySQL database:
+* TODO
+
 Finally, running `node server` will start the server. The server will be hosted on port `3001` (the ip and port will be printed to the console)
 
 ### Dependencies
