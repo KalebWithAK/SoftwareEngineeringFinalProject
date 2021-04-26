@@ -14,13 +14,13 @@ module.exports.email_is_taken = async (dbconn, email) => {
 
 // Tries to create a user account and returns a boolean based on whether it was
 // successful
-module.exports.register_user = async (dbconn, email, password) => {
+module.exports.register_user = async (dbconn, email, name, password) => {
     // Create the user's password hash
     let { hash, salt } = create_password_hash(password)
 
     try {
-        const sql = 'INSERT INTO `user` (email, password_hash, password_salt, updated) VALUES (?, ?, ?, CURRENT_TIMESTAMP)'
-        let results = await dbconn.query(sql, [email, hash, salt])
+        const sql = 'INSERT INTO `user` (email, name, password_hash, password_salt, updated) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
+        let results = await dbconn.query(sql, [email, name, hash, salt])
         return true
     } catch (e) {
         console.error('Failed to register user:')
@@ -88,6 +88,17 @@ module.exports.verify_session = async (dbconn, session_key) => {
     return false
 }
 
+module.exports.is_admin = async (dbconn, session_key) => {
+    try {
+        const sql = 'SELECT user.admin FROM (`user` INNER JOIN `session` ON user.id=session.user_id) WHERE session.session_key=?'
+        let results = await dbconn.query(sql, [session_key])
+    } catch (e) {
+        console.error('Failed to verify admin status:')
+        console.error(e)
+    }
+    return false
+}
+
 module.exports.deauth = async (dbconn, session_key) => {
     try {
         const sql = 'UPDATE `session` SET `expired`=1 WHERE `session_key`=?'
@@ -102,8 +113,8 @@ module.exports.deauth = async (dbconn, session_key) => {
 
 // Utility functions
 
-function sha512(password, salt) {
-    return crypto.pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`)
+function sha512(password, salt, iterations=1000) {
+    return crypto.pbkdf2Sync(password, salt, iterations, 64, `sha512`).toString(`hex`)
 }
 
 function create_password_hash(password) {

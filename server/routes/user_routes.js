@@ -19,6 +19,17 @@ module.exports.auth_required = (dbpool) => async (req, res, next) => {
     next()
 }
 
+module.exports.admin_required = (dbpool) => async (req, res, next) => {
+    if (!(await dbuser.is_admin(dbpool, req.body.session_key))) {
+        res.json({
+            error: 'Insufficient permissions',
+        })
+        return
+    }
+
+    next()
+}
+
 module.exports.logout = (dbpool) => async (req, res) => {
     if (await dbuser.deauth(dbpool, req.body.session_key)) {
         res.json({

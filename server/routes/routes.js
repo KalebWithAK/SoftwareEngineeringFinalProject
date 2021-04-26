@@ -65,5 +65,15 @@ module.exports = (dbpool) => {
             .all(user_routes.auth_required(dbpool))
             .delete(user_routes.logout(dbpool))
 
+    // Category routes
+
+    // Listing categories
+    router.get('/api/category/list', category_routes.get_categories(dbpool))
+
+    router.route('/api/user/admintest')
+            .all(user_routes.auth_required(dbpool))
+            .all(user_routes.admin_required(dbpool))
+            .get((req, res) => res.send('hi'))
+
     return router
 }
