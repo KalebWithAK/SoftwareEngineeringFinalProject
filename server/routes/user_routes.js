@@ -42,6 +42,31 @@ module.exports.logout = (dbpool) => async (req, res) => {
     }
 }
 
+module.exports.list_users = (dbpool) => async (req, res) => {
+    try {
+        let results = await dbpool.query('SELECT `id`, `email`, `name`, `admin`, `created`, `updated` FROM `user`')
+        res.json({
+            users: results.map(user => {
+                return {
+                    user_id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    is_admin: !!user.admin,
+                    created_timestamp: user.created,
+                    updated_timestamp: user.updated,
+                }
+            }),
+        })
+        return
+    } catch (e) {
+        console.error('Failed to get users:')
+        console.error(e)
+    }
+    res.json({
+        error: 'Failed to get user list'
+    })
+}
+
 module.exports.create_user = (dbpool) => async (req, res) => {
     // Make sure required info is present
     if (!req.body || !req.body.email || !req.body.name || !req.body.password) {
@@ -82,7 +107,7 @@ module.exports.login = (dbpool) => async (req, res) => {
         res.json({
             error: "Missing email and/or password in JSON request body",
         })
-        return;
+        return
     }
 
     let email = req.body.email
@@ -109,5 +134,47 @@ module.exports.login = (dbpool) => async (req, res) => {
 
     res.json({
         error: 'Failed to login with the provided credentials',
+    })
+}
+
+module.exports.delete_user = (dbconn) => async (req, res) => {
+    // Make sure required info is present
+    if (!req.body || !req.body.user_id) {
+        res.json({
+            error: 'Missing user ID',
+        })
+        return
+    }
+
+    // Get current user's id
+    let current_user_id = await dbuser.session_user_id(dbconn, req.body.session_key)
+    if (current_user_id < 0) {
+        res.json({
+            error: 'Failed to get current user ID'
+        })
+        return
+    }
+
+    // Make sure current user isn't deleting themselves
+    if (req.body.user_id == current_user_id) {
+        res.json({
+            error: 'Cannot delete self'
+        })
+        return
+    }
+
+    try {
+        // Delete the specified user
+        await dbconn.query('UPDATE `user` SET `deleted`=TRUE, `updated`=CURRENT_TIMESTAMP WHERE `id`=?', [req.body.user_id])
+        res.json({
+            success: true,
+        })
+        return
+    } catch (e) {
+        console.error(`Failed to delete user ${req.body.user_id}:`)
+        console.error(e)
+    }
+    res.json({
+        "error": "Failed to delete user"
     })
 }

@@ -32,10 +32,15 @@ module.exports.register_user = async (dbconn, email, name, password) => {
 // Tries to create a session with the provided login information
 module.exports.try_login = async (dbconn, email, password) => {
     try {
-        const sql = 'SELECT `id`, `password_hash`, `password_salt` FROM `user` WHERE `email`=?'
+        const sql = 'SELECT `id`, `password_hash`, `password_salt`, `deleted` FROM `user` WHERE `email`=?'
         let results = await dbconn.query(sql, [email])
         if (results.length > 0) {
             let r = results[0]
+            if (r.deleted) {
+                return {
+                    error: 'Account deleted',
+                }
+            }
             return create_session(dbconn, email, password, r['id'], r['password_hash'], r['password_salt'])
         }
     } catch (e) {
@@ -78,9 +83,17 @@ async function create_session(dbconn, email, password, user_id, password_hash, p
 
 module.exports.verify_session = async (dbconn, session_key) => {
     try {
-        const sql = 'SELECT COUNT(*) FROM `session` WHERE `session_key`=? AND `expired`=0'
-        let results = await dbconn.query(sql, [session_key])
-        return results.length > 0 && parseInt(results[0]['COUNT(*)']) > 0
+        const sql1 = 'SELECT COUNT(*) FROM `session` WHERE `session_key`=? AND `expired`=0'
+        let results1 = await dbconn.query(sql1, [session_key])
+        if (results1.length > 0 && parseInt(results1[0]['COUNT(*)']) > 0) {
+            // Get user ID from the session key
+            let user_id = await module.exports.session_user_id(dbconn, session_key)
+            if (user_id >= 0) {
+                // Make sure user account still exists
+                let results2 = await dbconn.query('SELECT `deleted` FROM `user` WHERE `id`=?', [user_id])
+                return results2.length > 0 && !results2[0].deleted
+            }
+        }
     } catch (e) {
         console.error('Failed to verify session:')
         console.error(e)

@@ -65,6 +65,51 @@ module.exports = (dbpool) => {
             .all(user_routes.auth_required(dbpool))
             .delete(user_routes.logout(dbpool))
 
+    // List users
+    //  Send a GET request with the JSON:
+    //      {
+    //          "session_key": "ADMIN SESSION KEY"
+    //      }
+    //  If the fetch fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the fetch succeeds, the returned JSON will be:
+    //      {
+    //          "users": [
+    //              {
+    //                  "user_id": USER ID,
+    //                  "email": USER EMAIL,
+    //                  "name": USER'S NAME,
+    //                  "is_admin": true/false,
+    //              },
+    //              ....
+    //          ]
+    //      }
+    router.route('/api/user/list')
+            .all(user_routes.auth_required(dbpool))
+            .all(user_routes.admin_required(dbpool))
+            .get(user_routes.list_users(dbpool))
+
+    // Delete a user
+    //  Send a DELETE request with the JSON:
+    //      {
+    //          "session_key": "SESSION KEY",
+    //          "user_id": USER TO DELETE,
+    //      }
+    //  If the delete fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the delete succeeds, the returned JSON will be:
+    //      {
+    //          "success": true
+    //      }
+    router.route('/api/user/delete')
+            .all(user_routes.auth_required(dbpool))
+            .all(user_routes.admin_required(dbpool))
+            .delete(user_routes.delete_user(dbpool))
+
     // Category routes
 
     // Listing categories
