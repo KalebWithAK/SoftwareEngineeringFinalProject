@@ -2,7 +2,7 @@ const dbuser = require('./dbuser')
 
 module.exports.get_posts = async (dbconn) => {
     try {
-        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id)'
+        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id)'
         let results = await dbconn.query(sql, [])
         if (results.length > 0) {
             return results.map(post => {
@@ -12,6 +12,7 @@ module.exports.get_posts = async (dbconn) => {
                     creator_name: post.name,
                     category_id: post.category_id,
                     title: post.title,
+                    content: post.content,
                     created_timestamp: post.created,
                     updated_timestamp: post.updated,
                 }
