@@ -1,10 +1,35 @@
+module.exports.get_posts = async (dbconn) => {
+    try {
+        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id)'
+        let results = await dbconn.query(sql, [])
+        if (results.length > 0) {
+            return results.map(post => {
+                return {
+                    post_id: post.id,
+                    creator_id: post.creator_id,
+                    creator_name: post.name,
+                    category_id: post.category_id,
+                    title: post.title,
+                    created_timestamp: post.created,
+                    updated_timestamp: post.updated,
+                }
+            })
+        }
+    } catch (e) {
+        console.error('Failed to get post list')
+        console.error(e)
+    }
+    return []
+}
+
 module.exports.get_post_from_id = async (dbconn, post_id) => {
     try {
-        const sql = 'SELECT post.id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id) WHERE `post_id`=?'
+        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id) WHERE post.id=?'
         let results = await dbconn.query(sql, [post_id])
         if (results.length > 0) {
             return {
                 post_id: results[0].id,
+                creator_id: results[0].creator_id,
                 creator_name: results[0].name,
                 category_id: results[0].category_id,
                 title: results[0].title,

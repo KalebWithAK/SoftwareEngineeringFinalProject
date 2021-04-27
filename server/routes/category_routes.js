@@ -36,6 +36,18 @@ module.exports.get_categories = (dbconn) => async (req, res) => {
     })
 }
 
+module.exports.get_category = (dbconn) => async (req, res) => {
+    if (!req.body.category_id) {
+        res.json({
+            error: 'Missing category id',
+        })
+    } else {
+        res.json((await dbcat.get_category_from_id(dbconn, req.body.category_id)) || {
+            error: 'Category not found',
+        })
+    }
+}
+
 module.exports.create_category = (dbconn) => async (req, res) => {
     // Make sure the title was provided
     if (!req.body.title) {

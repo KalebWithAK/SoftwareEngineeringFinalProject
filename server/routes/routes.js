@@ -72,19 +72,31 @@ module.exports = (dbpool) => {
     //  {
     //      "categories": [
     //          {
-    //              "category_id": CATEGORY 1 ID,
-    //              "title": "CATEGORY 1 NAME",
-    //              "creator_name": "CATEGORY 1 CREATOR NAME"
-    //          },
-    //          {
-    //              "category_id": CATEGORY 2 ID,
-    //              "title": "CATEGORY 2 NAME",
-    //              "creator_name": "CATEGORY 2 CREATOR NAME"
+    //              "category_id": CATEGORY ID,
+    //              "title": "CATEGORY NAME",
+    //              "creator_name": "CATEGORY CREATOR NAME"
     //          },
     //          ...
     //      ]
     //  }
     router.get('/api/category/list', category_routes.get_categories(dbpool))
+
+    // Getting a category
+    //  Send a GET request with the following JSON data:
+    //      {
+    //          "category_id": CATEGORY ID
+    //      }
+    //  If not successful, the response JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the category was found, the response will be of the form:
+    //      {
+    //          "category_id": CATEGORY ID,
+    //          "title": "CATEGORY NAME",
+    //          "creator_name": "NAME OF CREATING USER"
+    //      }
+    router.get('/api/category/get', category_routes.get_category(dbpool))
 
     // Creating categories
     //  Send a PUT request with the following JSON data:
@@ -106,6 +118,46 @@ module.exports = (dbpool) => {
             .put(category_routes.create_category(dbpool))
 
     // Post routes
+
+    // List posts
+    //  Send a GET request and the response will be of the form:
+    //  {
+    //      "posts": [
+    //          {
+    //              "post_id": POST ID,
+    //              "creator_id": USER ID OF CREATOR,
+    //              "creator_name": "NAME OF CREATOR",
+    //              "category_id": ID OF CATEGORY,
+    //              "title": "TITLE OF POST",
+    //              "created_timestamp": "TIME CREATED",
+    //              "updated_timestamp": "TIME LAST UPDATED",
+    //          },
+    //          ...
+    //      ]
+    //  }
+    router.get('/api/post/list', post_routes.get_posts(dbpool))
+
+    // Get a post
+    //  Send a GET request with the following JSON data:
+    //      {
+    //          "post_id": POST ID
+    //      }
+    //  If not successful, the response JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the post was found, the response will be of the form:
+    //      {
+    //          "post_id": POST ID,
+    //          "creator_id": USER ID OF CREATOR,
+    //          "creator_name": "NAME OF CREATOR",
+    //          "category_id": ID OF CATEGORY,
+    //          "title": "TITLE OF POST",
+    //          "content": "POST CONTENTS",
+    //          "created_timestamp": "TIME CREATED",
+    //          "updated_timestamp": "TIME LAST UPDATED",
+    //      }
+    router.get('/api/post/get', post_routes.get_post(dbpool))
 
     // Creating a post
     //  Send a PUT request with the following JSON data:
@@ -137,13 +189,13 @@ module.exports = (dbpool) => {
     //          "title": "POST TITLE",          (Optional)
     //          "content": "POST CONTENT"       (Optional)
     //      }
-    //  If the creation fails, the returned JSON will be:
+    //  If the update fails, the returned JSON will be:
     //      {
     //          "error": "ERROR HERE"
     //      }
-    //  If the creation succeeds, the returned JSON will be:
+    //  If the update succeeds, the returned JSON will be:
     //      {
-    //          "post_id": NEW POST ID
+    //          "success": true
     //      }
     router.route('/api/post/update')
             .all(user_routes.auth_required(dbpool))
