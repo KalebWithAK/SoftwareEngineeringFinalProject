@@ -201,5 +201,23 @@ module.exports = (dbpool) => {
             .all(user_routes.auth_required(dbpool))
             .put(post_routes.update_post(dbpool))
 
+    // Deleting a post
+    //  Send a DELETE request with the following JSON data:
+    //      {
+    //          "session_key": "SESSION KEY",
+    //          "post_id": POST ID
+    //      }
+    //  If the delete fails, the returned JSON will be:
+    //      {
+    //          "error": "ERROR HERE"
+    //      }
+    //  If the delete succeeds, the returned JSON will be:
+    //      {
+    //          "success": true
+    //      }
+    router.route('/api/post/delete')
+            .all(user_routes.auth_required(dbpool))
+            .delete(post_routes.delete_post(dbpool))
+
     return router
 }

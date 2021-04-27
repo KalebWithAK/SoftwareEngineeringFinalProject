@@ -101,8 +101,8 @@ module.exports.update_post = (dbconn) => async (req, res) => {
     }
 
     // Get the ID of the creator
-    let creator_id = await dbuser.session_user_id(dbconn, req.body.session_key)
-    if (creator_id < 0) {
+    let user_id = await dbuser.session_user_id(dbconn, req.body.session_key)
+    if (user_id < 0) {
         res.json({
             error: 'Failed to check creator id',
         })
@@ -110,7 +110,7 @@ module.exports.update_post = (dbconn) => async (req, res) => {
     }
 
     // Check if the user has permission to edit this post
-    if (!(await dbuser.is_admin(dbconn, req.body.session_key)) && creator_id != post.creator_id) {
+    if (!(await dbpost.has_edit_permission(dbconn, post.creator_id, user_id, req.body.session_key))) {
         res.json({
             error: 'Insufficient permissions to edit the specified post',
         })
@@ -162,5 +162,55 @@ module.exports.update_post = (dbconn) => async (req, res) => {
     }
     res.json({
         error: 'Failed to update post'
+    })
+}
+
+module.exports.delete_post = (dbconn) => async (req, res) => {
+    // Make sure post_id is provided
+    if (!req.body.post_id) {
+        res.json({
+            error: 'Missing post id',
+        })
+        return
+    }
+
+    // Make sure post_id is valid
+    let post = await dbpost.get_post_from_id(dbconn, req.body.post_id)
+    if (!post) {
+        res.json({
+            error: 'Post not found',
+        })
+        return
+    }
+
+    // Get the ID of the creator
+    let user_id = await dbuser.session_user_id(dbconn, req.body.session_key)
+    if (user_id < 0) {
+        res.json({
+            error: 'Failed to check creator id',
+        })
+        return
+    }
+
+    // Check if the user has permission to delete this post
+    if (!(await dbpost.has_edit_permission(dbconn, post.creator_id, user_id, req.body.session_key))) {
+        res.json({
+            error: 'Insufficient permissions to delete the specified post',
+        })
+        return
+    }
+
+    try {
+        // Delete the post
+        const sql = 'DELETE FROM `post` WHERE `id`=?'
+        let results = await dbconn.query(sql, [req.body.post_id])
+        res.json({ success: true, })
+        return
+    } catch (e) {
+        console.error('Failed to delete post:')
+        console.error(e)
+    }
+    res.json({
+        error: 'Failed to delete post'
     })
 }

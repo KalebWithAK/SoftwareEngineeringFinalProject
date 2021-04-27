@@ -1,3 +1,5 @@
+const dbuser = require('./dbuser')
+
 module.exports.get_posts = async (dbconn) => {
     try {
         const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id)'
@@ -54,4 +56,12 @@ module.exports.post_exists = async (dbconn, title) => {
         console.error(e)
     }
     return false
+}
+
+module.exports.has_edit_permission = async (dbconn, creator_id, user_id, session_key) => {
+    // Admins can update anyone's post
+    if (await dbuser.is_admin(dbconn, session_key)) return true
+
+    // Other users can only edit their own posts
+    return user_id == creator_id
 }
