@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom'
 
 class Preview extends React.Component {
     render() {
-        const { html, css, title, creator } = this.props
+        const { content, title, creator, id } = this.props
 
         return (
-            <Link to='/viewpost' className='preview'>
+            <Link to={ `/viewpost/${id}` } className='preview'>
                 <iframe 
                     className='previewIframe' 
                     src='../iframes/iframe.html' 
-                    srcDoc={ `<div>${ html }</div> <style>${ css }</style>` } 
+                    srcDoc={ `<div>${ content }</div>` } 
                     title={ `${ title } Preview` }>
                 </iframe>
                 <h3 className='previewTitle'>{ title }</h3>
