@@ -1,5 +1,5 @@
 import React from 'react'
-//import Parser from 'html-react-parser'
+import Parser from 'html-react-parser'
 
 class Post extends React.Component {
     render() {
@@ -11,7 +11,7 @@ class Post extends React.Component {
             <div>
                 <h1>{ title }</h1>
                 { (creator.trim() !== '') ? <p>Created By: { creator }</p> : null }
-                { content }
+                { Parser(content) }
             </div>
         )
     }
