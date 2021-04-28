@@ -202,7 +202,7 @@ module.exports = (dbpool) => {
     //          "created_timestamp": "TIME CREATED",
     //          "updated_timestamp": "TIME LAST UPDATED",
     //      }
-    router.get('/api/post/get', post_routes.get_post(dbpool))
+    router.get('/api/post/get/:id', post_routes.get_post(dbpool))
 
     // Creating a post
     //  Send a PUT request with the following JSON data:

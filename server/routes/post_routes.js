@@ -9,12 +9,14 @@ module.exports.get_posts = (dbconn) => async (req, res) => {
 }
 
 module.exports.get_post = (dbconn) => async (req, res) => {
-    if (!req.body.post_id) {
+    const { id } = req.params
+    
+    if (!id) {
         res.json({
             error: 'Missing post id',
         })
     } else {
-        res.json((await dbpost.get_post_from_id(dbconn, req.body.post_id)) || {
+        res.json((await dbpost.get_post_from_id(dbconn, id)) || {
             error: 'Post not found',
         })
     }

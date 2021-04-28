@@ -6,23 +6,52 @@ class ViewPost extends React.Component {
         super(props)
 
         this.state = {
-            html: '',
-            css: ''
+            title: '',
+            creator: '',
+            content: '',
+            loading: true,
+            err: null
         }
     }
 
     componentDidMount() {
-        const postId = this.props
+        const { id } = this.props.match.params
 
-        // TODO - fetch html and css from /getPost/${ postId }
+        // TODO - fetch html and css from /post/${ id }
+        fetch(`http://localhost:3001/api/post/get/${ id }`, {
+            method: 'get',
+            mode: 'cors',
+            headers: { 'Content-Type': 'application/json' },
+            //body: JSON.stringify({ post_id: id })
+        })
+        .then(response => response.json())
+        .then(
+            (data) => {
+                this.setState({
+                    creator: data.creator_name,
+                    content: data.content,
+                    title: data.title,
+                    loading: false
+                })
+            },
+            (err) => {
+                this.setState({
+                    loading: false,
+                    err
+                })
+            }
+        )
+
     }
 
     render() {
-        const { html, css } = this.state
+        const { content, title, creator, loading, err } = this.state
 
         return (
+            (loading) ? <div>loading...</div> : 
+            (err) ? <div>We ran into an error while loading the selected post: { err.message }</div> : 
             <div className='displayPreview'>
-                <Post html={ html } css={ css } />
+                <Post title={ title } creator={ creator } content={ content } />
             </div>
         )
     }

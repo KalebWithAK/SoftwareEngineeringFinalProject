@@ -16,12 +16,12 @@ import CreatorManagement from './pages/creatorManagement'
 
 function App() {
   const routes = [
-    { path: '/settings', component: <Settings />, id: 0 },
-    { path: '/viewpost/:id', component: <ViewPost />, id: 1 },
-    { path: '/templateEditor', component: <TemplateEditor />, id: 2 },
-    { path: '/customEditor', component: <CustomEditor />, id: 3 },
-    { path: '/creatorManagement', component: <CreatorManagement />, id: 4 },
-    { path: '/', component: <Home />, id: 5 }
+    { path: '/settings', component: Settings, id: 0 },
+    { path: '/viewpost/:id', component: ViewPost, id: 1 },
+    { path: '/templateEditor', component: TemplateEditor, id: 2 },
+    { path: '/customEditor', component: CustomEditor, id: 3 },
+    { path: '/creatorManagement', component: CreatorManagement, id: 4 },
+    { path: '/', component: Home, id: 5 }
   ]
   
   return (
@@ -30,7 +30,7 @@ function App() {
         <Top />
 
         <Switch>
-          { routes.map(route => <Route key={ route.id } path={ route.path }>{ route.component }</Route> ) }
+          { routes.map(route => <Route key={ route.id } path={ route.path } component={ route.component } /> ) }
         </Switch>
       </Router>
     </div>
