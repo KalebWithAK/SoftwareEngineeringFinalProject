@@ -174,8 +174,10 @@ module.exports = (dbpool) => {
     //              "creator_name": "NAME OF CREATOR",
     //              "category_id": ID OF CATEGORY,
     //              "title": "TITLE OF POST",
+    //              "content": "POST CONTENT",
+    //              "content_html": "RENDERED HTML POST",
     //              "created_timestamp": "TIME CREATED",
-    //              "updated_timestamp": "TIME LAST UPDATED",
+    //              "updated_timestamp": "TIME LAST UPDATED"
     //          },
     //          ...
     //      ]
@@ -199,8 +201,10 @@ module.exports = (dbpool) => {
     //          "category_id": ID OF CATEGORY,
     //          "title": "TITLE OF POST",
     //          "content": "POST CONTENTS",
+    //          "content_html": "MARKDOWN POST RENDERED AS HTML",
+    //          "style": "CUSTOM CSS STYLING FOR THIS POST",
     //          "created_timestamp": "TIME CREATED",
-    //          "updated_timestamp": "TIME LAST UPDATED",
+    //          "updated_timestamp": "TIME LAST UPDATED"
     //      }
     router.get('/api/post/get/:id', post_routes.get_post(dbpool))
 
@@ -210,7 +214,8 @@ module.exports = (dbpool) => {
     //          "session_key": "SESSION KEY",
     //          "category_id": CATEGORY ID,
     //          "title": "POST TITLE",
-    //          "content": "POST CONTENT"
+    //          "content": "POST CONTENT",
+    //          "style": "CUSTOM CSS STYLING FOR THIS POST" (Optional)
     //      }
     //  If the creation fails, the returned JSON will be:
     //      {
@@ -233,6 +238,7 @@ module.exports = (dbpool) => {
     //          "category_id": CATEGORY ID,     (Optional)
     //          "title": "POST TITLE",          (Optional)
     //          "content": "POST CONTENT"       (Optional)
+    //          "style": "POST STYLE"           (Optional)
     //      }
     //  If the update fails, the returned JSON will be:
     //      {

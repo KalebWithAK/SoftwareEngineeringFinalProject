@@ -10,7 +10,7 @@ module.exports.get_posts = (dbconn) => async (req, res) => {
 
 module.exports.get_post = (dbconn) => async (req, res) => {
     const { id } = req.params
-    
+
     if (!id) {
         res.json({
             error: 'Missing post id',
@@ -56,15 +56,26 @@ module.exports.create_post = (dbconn) => async (req, res) => {
         return
     }
 
+    let sqlInner = 'creator_id, category_id, title, content, updated'
+    let sqlVals = '?, ?, ?, ?, CURRENT_TIMESTAMP'
+    let sqlArgs = [
+        creator_id,
+        req.body.category_id,
+        req.body.title,
+        req.body.content,
+    ]
+
+    // Add style tag if necessary
+    if (!!req.body.style) {
+        sqlInner += ', style'
+        sqlValus += ', ?'
+        sqlArgs.push(req.body.style)
+    }
+
     try {
         // Insert the new post
-        const sql = 'INSERT INTO `post` (creator_id, category_id, title, content, updated) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)'
-        let results = await dbconn.query(sql, [
-            creator_id,
-            req.body.category_id,
-            req.body.title,
-            req.body.content,
-        ])
+        const sql = `INSERT INTO \`post\` (${sqlInner}) VALUES (${sqlVals})`
+        let results = await dbconn.query(sql, sqlArgs)
         res.json({ post_id: results.insertId, })
         return
     } catch (e) {
@@ -95,9 +106,9 @@ module.exports.update_post = (dbconn) => async (req, res) => {
     }
 
     // Check if all optionals are missing
-    if (!req.body.category_id && !req.body.title && !req.body.content) {
+    if (!req.body.category_id && !req.body.title && !req.body.content && !req.body.style) {
         res.json({
-            error: 'Missing post category id, title, and/or content (at least one is required)',
+            error: 'Missing post category id, title, style, and/or content (at least one is required)',
         })
         return
     }
@@ -149,6 +160,10 @@ module.exports.update_post = (dbconn) => async (req, res) => {
     if (!!req.body.content) {
         editSql += "content=?,"
         vars.push(req.body.content)
+    }
+    if (!!req.body.style) {
+        editSql += "style=?,"
+        vars.push(req.body.style)
     }
     vars.push(req.body.post_id)
 
