@@ -63,6 +63,7 @@ CREATE TABLE `post` (
   `category_id` int(11) NOT NULL COMMENT 'The creating user''s name',
   `title` varchar(64) NOT NULL COMMENT 'The title of the post',
   `content` text NOT NULL COMMENT 'The content within the post',
+  `style` text NULL COMMENT 'Custom CSS to apply to this post',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'The timestamp at which this post was created',
   `updated` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'The timestamp at which this post was last updated'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -80,7 +81,7 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 CREATE TABLE `session` (
   `id` int(11) NOT NULL COMMENT 'The session ID',
-  `session_key` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'The session''s key',
+  `session_key` varchar(32) NOT NULL COMMENT 'The session''s key',
   `user_id` int(11) NOT NULL COMMENT 'The user''s ID',
   `expired` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether this session has expired',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'The timestamp at which the session was created'
@@ -100,10 +101,10 @@ SET AUTOCOMMIT = 0;
 START TRANSACTION;
 CREATE TABLE `user` (
   `id` int(11) NOT NULL COMMENT 'A unique integer representing this user''s ID',
-  `email` varchar(128) COLLATE utf8_unicode_ci NOT NULL COMMENT 'A unique email address',
-  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL COMMENT 'This user''s display name',
-  `password_hash` varchar(150) COLLATE utf8_unicode_ci NOT NULL COMMENT 'This user''s password''s hash',
-  `password_salt` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'The salt value used when generating the password''s hash',
+  `email` varchar(128) NOT NULL COMMENT 'A unique email address',
+  `name` varchar(64) NOT NULL COMMENT 'This user''s display name',
+  `password_hash` varchar(150) NOT NULL COMMENT 'This user''s password''s hash',
+  `password_salt` varchar(32) NOT NULL COMMENT 'The salt value used when generating the password''s hash',
   `admin` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether this user has administration permissions',
   `deleted` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Whether this user''s account has been deleted',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'The timestamp at which this account was created',

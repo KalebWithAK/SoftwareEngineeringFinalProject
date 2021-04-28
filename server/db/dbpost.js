@@ -1,4 +1,16 @@
 const dbuser = require('./dbuser')
+// Markdown converter
+const converter = new (require('showdown')).Converter()
+converter.setOption('simplifiedAutoLink', 'true');
+converter.setOption('noHeaderId', 'true')
+converter.setOption('strikethrough', 'true')
+converter.setOption('tables', 'true')
+converter.setOption('tasklists', 'true')
+converter.setOption('disableForced4SpacesIndentedSublists', 'true')
+
+function parseMarkdown(content) {
+    return converter.makeHtml(content)
+}
 
 module.exports.get_posts = async (dbconn) => {
     try {
@@ -13,6 +25,7 @@ module.exports.get_posts = async (dbconn) => {
                     category_id: post.category_id,
                     title: post.title,
                     content: post.content,
+                    content_html: parseMarkdown(post.content),
                     created_timestamp: post.created,
                     updated_timestamp: post.updated,
                 }
@@ -27,7 +40,7 @@ module.exports.get_posts = async (dbconn) => {
 
 module.exports.get_post_from_id = async (dbconn, post_id) => {
     try {
-        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id) WHERE post.id=?'
+        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.style, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id) WHERE post.id=?'
         let results = await dbconn.query(sql, [post_id])
         if (results.length > 0) {
             return {
@@ -37,6 +50,8 @@ module.exports.get_post_from_id = async (dbconn, post_id) => {
                 category_id: results[0].category_id,
                 title: results[0].title,
                 content: results[0].content,
+                content_html: parseMarkdown(results[0].content),
+                style: results[0].style,
                 created_timestamp: results[0].created,
                 updated_timestamp: results[0].updated,
             }
