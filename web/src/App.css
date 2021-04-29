@@ -24,6 +24,7 @@
   align-items: center;
   text-decoration: none;
   color: black;
+  margin: 1em, 1em, 1em;
 }
 
 .previewIframe {
@@ -39,5 +40,5 @@
   width: 90%;
   margin: auto;
   display: flex;
-
+  justify-content: center;
 }
