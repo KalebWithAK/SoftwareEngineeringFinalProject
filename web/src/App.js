@@ -12,6 +12,7 @@ import CustomEditor from './pages/customEditor.js'
 import TemplateEditor from './pages/templateEditor.js'
 import Top from './components/top.js'
 import CreatorManagement from './pages/creatorManagement'
+import Login from './pages/login'
 
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
     { path: '/templateEditor', component: TemplateEditor, id: 2 },
     { path: '/customEditor', component: CustomEditor, id: 3 },
     { path: '/creatorManagement', component: CreatorManagement, id: 4 },
-    { path: '/', component: Home, id: 5 }
+    { path: '/login', component: Login, id: 5 },
+    { path: '/', component: Home, id: 6 }
   ]
   
   return (
