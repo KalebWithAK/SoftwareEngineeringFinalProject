@@ -16,8 +16,8 @@
 }
 
 .preview {
-  width: 10em;
-  height: 14em;
+  width: 15em;
+  height: 15em;
   border: 1px solid gray;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@
 }
 
 .previewIframe {
-  width: 10em;
+  width: 15em;
   height: 8em;
 }
 
