@@ -208,6 +208,30 @@ module.exports = (dbpool) => {
     //      }
     router.get('/api/post/get/:id', post_routes.get_post(dbpool))
 
+    // Get list of posts made by the same creator
+    //  Send a GET request with the following data:
+    //      creator_id: id of all the posts' creator
+    //  If unsuccessful, the response JSON will be:
+    //      {
+    //          "error": "ERROR HERE"  
+    //      }
+    // If any posts with the creator_id is found, the response will be of the form:
+    //     [
+    //          {
+    //              "post_id": POST ID,
+    //              "creator_id": USER ID OF CREATOR,
+    //              "creator_name": "NAME OF CREATOR",
+    //              "category_id": ID OF CATEGORY,
+    //              "title": "TITLE OF POST",
+    //              "content": "POST CONTENTS",
+    //              "content_html": "MARKDOWN POST RENDERED AS HTML",
+    //              "style": "CUSTOM CSS STYLING FOR THIS POST",
+    //              "created_timestamp": "TIME CREATED",
+    //              "updated_timestamp": "TIME LAST UPDATED"
+    //          }
+    //     ]
+    router.get('/api/post/creatorlist/:creator_id', post_routes.get_creator_posts(dbpool))
+
     // Creating a post
     //  Send a PUT request with the following JSON data:
     //      {

@@ -63,6 +63,33 @@ module.exports.get_post_from_id = async (dbconn, post_id) => {
     return null
 }
 
+module.exports.get_posts_from_creator = async (dbconn, creator_id) => {
+    try {
+        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id) WHERE post.creator_id=?'
+        let results = await dbconn.query(sql, [creator_id])
+        if (results.length > 0) {
+            return results.map(post => {
+                return {
+                    post_id: post.id,
+                    creator_id: post.creator_id,
+                    creator_name: post.name,
+                    category_id: post.category_id,
+                    title: post.title,
+                    content: post.content,
+                    content_html: parseMarkdown(post.content),
+                    created_timestamp: post.created,
+                    updated_timestamp: post.updated,
+                }
+            })
+        }
+    }
+    catch (e) {
+        console.error('Failed to get post list')
+        console.error(e)
+    }
+    return []
+}
+
 module.exports.post_exists = async (dbconn, title) => {
     try {
         let results = await dbconn.query('SELECT COUNT(*) FROM `post` WHERE `title`=?', [title])

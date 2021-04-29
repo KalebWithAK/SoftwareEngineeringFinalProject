@@ -22,6 +22,18 @@ module.exports.get_post = (dbconn) => async (req, res) => {
     }
 }
 
+module.exports.get_creator_posts = (dbconn) => async (req, res) => {
+    const { creator_id } = req.params
+
+    if (!creator_id) {
+        res.json({ error: 'Missing creator id' })
+    } else {
+        res.json((await dbpost.get_posts_from_creator(dbconn, creator_id)) || {
+            error: 'No posts with that creator were found'
+        })
+    }
+}
+
 module.exports.create_post = (dbconn) => async (req, res) => {
     // Check for missing information
     if (!req.body.category_id || !req.body.title || !req.body.content) {
