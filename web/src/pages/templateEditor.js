@@ -26,6 +26,7 @@ class TemplateEditor extends React.Component {
                 <p>Image</p>
                 <input type='file' onChange={ this.handleImageUpload } />
 
+                <div />
                 <button className='submitButton' onClick={ this.submitPost }>Submit Post</button>
             </div>
         )

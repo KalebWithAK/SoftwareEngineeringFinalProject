@@ -21,6 +21,7 @@ class CustomEditor extends React.Component {
                 <h2>CSS</h2>
                 <textarea onChange={ this.handleCssChange } />
 
+                <div />
                 <button className='submitButton' onClick={ this.submitPost }>Submit Post</button> 
             </div>
         )
