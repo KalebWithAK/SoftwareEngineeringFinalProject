@@ -6,7 +6,7 @@ class Preview extends React.Component {
         const { content, title, creator, id } = this.props
 
         return (
-            <Link to={ `/viewpost/${id}` } className='preview'>
+            <Link to={ `/viewpost/${ id }` } className='preview'>
                 <iframe 
                     className='previewIframe' 
                     src='../iframes/iframe.html' 
