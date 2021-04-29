@@ -39,7 +39,7 @@ class Home extends React.Component {
             (loading) ? <div>loading...</div> : 
             (err) ? <div>We ran into an error while loading posts: { err.message }</div> :
             <div className='previewLayout'>
-                { posts.map(post => <Preview key={ post.post_id } title={ post.title }  creator={ post.creator_name } content={ post.content } id={ post.post_id }/>) }
+                { posts.map(post => <Preview key={ post.post_id } title={ post.title }  creator={ post.creator_name } content={ post.content_html } id={ post.post_id }/>) }
             </div>
         )
     }
