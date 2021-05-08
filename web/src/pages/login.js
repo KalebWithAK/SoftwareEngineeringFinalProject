@@ -13,16 +13,14 @@ class Login extends React.Component {
     render() {
         return (
             <div>
-                <form onSubmit={ this.handleSubmit }>
-                    <p>Email</p>
-                    <input onChange={ this.handleEmailChange } />
+                <p>Email</p>
+                <input onChange={ this.handleEmailChange } />
 
-                    <p>Password</p>
-                    <input type='password' onChange={ this.handlePasswordChange } />
+                <p>Password</p>
+                <input type='password' onChange={ this.handlePasswordChange } />
 
-                    <div />
-                    <input type='submit' />
-                </form>
+                <div />
+                <button onClick={ this.handleSubmit }>Login</button>
             </div>
         )
     }
@@ -35,30 +33,26 @@ class Login extends React.Component {
         this.setState({ password: e.target.value })
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault()
-        console.log('handleSubmit')
-
+    handleSubmit = () => {
         const { email, password } = this.state
-        console.log(`email: ${ email } password: ${ password }`)
-
+        
         fetch('http://localhost:3001/api/user/login', {
             method: 'POST',
             mode: 'cors',
-            headers: 'Content-Type: application/json',
-            body: JSON.stringify({ 
-                email: this.state.email, 
-                password: this.state.password
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
         })
         .then(response => response.json())
         .then(
             (data) => {
-                console.log(data.session_key.session)
-                //sessionStorage.setItem("session_key", data.session_key.session)
+                sessionStorage.setItem('session_key', data.session_key.session)
+                this.props.history.push('/')
+                window.location.reload()
             },
             (err) => {
-                this.setState({ err })
+                this.setState({
+                    err
+                })
             }
         )
     }
