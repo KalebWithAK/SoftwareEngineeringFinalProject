@@ -15,11 +15,11 @@ class CustomEditor extends React.Component {
             <div>
                 <h1>Custom Editor</h1>
 
-                <h2>HTML</h2>
-                <textarea onChange={ this.handleHtmlChange } />
+                <h3>HTML</h3>
+                <textarea className='editorTextarea' onChange={ this.handleHtmlChange } />
 
-                <h2>CSS</h2>
-                <textarea onChange={ this.handleCssChange } />
+                <h3>CSS</h3>
+                <textarea className='editorTextarea' onChange={ this.handleCssChange } />
 
                 <div />
                 <button className='submitButton' onClick={ this.submitPost }>Submit Post</button> 
