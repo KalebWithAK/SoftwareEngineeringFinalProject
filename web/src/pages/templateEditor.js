@@ -17,13 +17,13 @@ class TemplateEditor extends React.Component {
             <div>   
                 <h1>Template Editor</h1>
 
-                <p>Title</p>
+                <h3>Title</h3>
                 <input onChange={ this.handleTitleChange } />
 
-                <p>Text</p>
-                <textarea onChange={ this.handleTextChange } />
+                <h3>Text</h3>
+                <textarea  className='editorTextarea' onChange={ this.handleTextChange } />
 
-                <p>Image</p>
+                <h3>Image</h3>
                 <input type='file' onChange={ this.handleImageUpload } />
 
                 <div />
