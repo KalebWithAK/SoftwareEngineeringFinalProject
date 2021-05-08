@@ -14,6 +14,7 @@ module.exports = (dbpool) => {
     //      {
     //          "email": "EMAIL HERE",
     //          "password": "PASSWORD HERE",
+    //          "name": "NAME HERE"
     //      }
     //  If the account creation fails, the following JSON will be returned:
     //      {
@@ -23,7 +24,7 @@ module.exports = (dbpool) => {
     //      {
     //          "success": true
     //      }
-    router.put('/api/user/register', user_routes.create_user(dbpool))
+    router.post('/api/user/register', user_routes.create_user(dbpool))
 
     // Logging in
     //  Send a POST request with the following JSON data:
