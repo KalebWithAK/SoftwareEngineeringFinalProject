@@ -184,16 +184,38 @@ module.exports = (dbpool) => {
     //  }
     router.get('/api/post/list', post_routes.get_posts(dbpool))
 
-    // Get a post
-    //  Send a GET request with the following JSON data:
-    //      {
-    //          "post_id": POST ID
-    //      }
-    //  If not successful, the response JSON will be:
+    //  Send a GET request with (some/all/none of) the following data:
+    //      text: CONTENT/TITLE SEARCH,                     (Optional)
+    //      before_date: POSTED BEFORE YYYY-MM-DD HH:MM:SS, (Optional)
+    //      after_date: POSTED AFTER YYYY-MM-DD HH:MM:SS,   (Optional)
+    //    Note: Use URL parameters for these, such as:
+    //      URL?name1=val1&name2=val2& ...
+    //  If an error occurs, the returned JSON will be:
     //      {
     //          "error": "ERROR HERE"
     //      }
-    //  If the post was found, the response will be of the form:
+    //  Otherwise, the returned JSON will be:
+    //      {
+    //          "posts": [
+    //              {
+    //                  "post_id": POST ID,
+    //                  "creator_id": USER ID OF CREATOR,
+    //                  "creator_name": "NAME OF CREATOR",
+    //                  "category_id": ID OF CATEGORY,
+    //                  "title": "TITLE OF POST",
+    //                  "content": "POST CONTENT",
+    //                  "content_html": "RENDERED HTML POST",
+    //                  "created_timestamp": "TIME CREATED",
+    //                  "updated_timestamp": "TIME LAST UPDATED"
+    //              },
+    //              ...
+    //          ]
+    //      }
+    router.get('/api/post/query', post_routes.query_posts(dbpool))
+
+    // Get a post
+    //  Send a GET request, if the post was found, the response will be of the
+    //  form:
     //      {
     //          "post_id": POST ID,
     //          "creator_id": USER ID OF CREATOR,
@@ -213,7 +235,7 @@ module.exports = (dbpool) => {
     //      creator_id: id of all the posts' creator
     //  If unsuccessful, the response JSON will be:
     //      {
-    //          "error": "ERROR HERE"  
+    //          "error": "ERROR HERE"
     //      }
     // If any posts with the creator_id is found, the response will be of the form:
     //     [
