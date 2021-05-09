@@ -8,6 +8,48 @@ module.exports.get_posts = (dbconn) => async (req, res) => {
     })
 }
 
+module.exports.query_posts = (dbconn) => async (req, res) => {
+    const { text, before_date, after_date } = req.query
+
+    let where_clauses = []
+    let where_data = []
+
+    // Check for query text in post content and titles
+    if (!!text) {
+        // Complicated one ew
+        let clause = 'post.id IN ( SELECT post.id FROM `post` WHERE LOCATE(?, post.content) > 0 OR LOCATE(?, post.title) > 0 )'
+
+        where_clauses.push(clause)
+        where_data.push(text)
+        where_data.push(text)
+    }
+
+    // Check for posts posted before the given date
+    if (!!before_date) {
+        where_clauses.push('DATE(post.updated) <= DATE(?)')
+        where_data.push(before_date)
+    }
+
+    // Check for posts posted after the given date
+    if (!!after_date) {
+        where_clauses.push('DATE(post.updated) >= DATE(?)')
+        where_data.push(after_date)
+    }
+
+    try {
+        res.json({
+            posts: await dbpost.query_posts(dbconn, where_clauses, where_data)
+        })
+    } catch (e) {
+        console.error('Failed to query posts')
+        console.error(e)
+
+        res.json({
+            error: 'Failed to query posts',
+        })
+    }
+}
+
 module.exports.get_post = (dbconn) => async (req, res) => {
     const { id } = req.params
 

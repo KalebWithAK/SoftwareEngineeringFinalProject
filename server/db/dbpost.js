@@ -12,30 +12,35 @@ function parseMarkdown(content) {
     return converter.makeHtml(content)
 }
 
-module.exports.get_posts = async (dbconn) => {
-    try {
-        const sql = 'SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (`post` LEFT OUTER JOIN `user` ON post.creator_id=user.id)'
-        let results = await dbconn.query(sql, [])
-        if (results.length > 0) {
-            return results.map(post => {
-                return {
-                    post_id: post.id,
-                    creator_id: post.creator_id,
-                    creator_name: post.name,
-                    category_id: post.category_id,
-                    title: post.title,
-                    content: post.content,
-                    content_html: parseMarkdown(post.content),
-                    created_timestamp: post.created,
-                    updated_timestamp: post.updated,
-                }
-            })
-        }
-    } catch (e) {
-        console.error('Failed to get post list')
-        console.error(e)
+module.exports.query_posts = async (dbconn, where_clauses, where_data) => {
+    // Combine SQL WHERE clauses into a single where clause string
+    let where = ''
+    if (where_clauses.length > 0) {
+        where = ' WHERE ' + where_clauses.join(' AND ')
+    }
+
+    const sql = `SELECT post.id, post.creator_id, user.name, post.category_id, post.title, post.content, post.created, post.updated FROM (\`post\` LEFT OUTER JOIN \`user\` ON post.creator_id=user.id)${where}`
+    let results = await dbconn.query(sql, where_data)
+    if (results.length > 0) {
+        return results.map(post => {
+            return {
+                post_id: post.id,
+                creator_id: post.creator_id,
+                creator_name: post.name,
+                category_id: post.category_id,
+                title: post.title,
+                content: post.content,
+                content_html: parseMarkdown(post.content),
+                created_timestamp: post.created,
+                updated_timestamp: post.updated,
+            }
+        })
     }
     return []
+}
+
+module.exports.get_posts = async (dbconn) => {
+    return await module.exports.query_posts(dbconn, [], [])
 }
 
 module.exports.get_post_from_id = async (dbconn, post_id) => {
