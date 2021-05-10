@@ -15,7 +15,7 @@ class TemplateEditor extends React.Component {
     render() {
         return (
             <div>   
-                <h1>Template Editor</h1>
+                <h1>Markdown Editor</h1>
 
                 <h3>Title</h3>
                 <input onChange={ this.handleTitleChange } />
@@ -23,8 +23,8 @@ class TemplateEditor extends React.Component {
                 <h3>Text</h3>
                 <textarea  className='editorTextarea' onChange={ this.handleTextChange } />
 
-                <h3>Image</h3>
-                <input type='file' onChange={ this.handleImageUpload } />
+                {/*<h3>Image</h3>
+                <input type='file' onChange={ this.handleImageUpload } />*/}
 
                 <div />
                 <button className='submitButton' onClick={ this.submitPost }>Submit Post</button>
@@ -44,37 +44,24 @@ class TemplateEditor extends React.Component {
         this.setState({ image: e.target.value })
     }
 
-    createPost = () => {
-        if (this.state.image) {
-            this.setState({ html: `
-            <div id='post'>
-                <h1>${ this.state.title }</h1>
-                <p>${ this.state.text }</p>
-                <img src=${ this.state.image }>
-            </div>
-            ` })
-        } else {
-            this.setState({ 
-                html: `
-            <div id='post'>
-                <h1>${ this.state.title }</h1>
-                <p>${ this.state.text }</p>
-            </div>
-            ` })
-            }
 
-        this.setState({ css: `
+    submitPost = () => {
+
+        const { title } = this.state
+
+        const html = `
+        <div id='post'>
+            <h1>${ this.state.title }</h1>
+            <p>${ this.state.text }</p>
+        </div>
+        `
+
+        const css = `
         #post {
             display: flex;
             justify-content: center;
         }
-        ` })
-    }
-
-    submitPost = () => {
-        this.createPost()
-
-        const { title, html, css } = this.state
+        ` 
 
         if (sessionStorage.getItem('session_key')) {
             fetch('http://localhost:3001/api/post/create', {
@@ -84,15 +71,16 @@ class TemplateEditor extends React.Component {
                 body: JSON.stringify({
                     session_key: sessionStorage.getItem('session_key'),
                     category_id: 11,
-                    title,
+                    title: title,
                     content: html,
-                    style: css
+                    //style: css
                 })
             })
             .then(response => response.json())
             .then(
                 (data) => {
-                    alert('Your post was successfully submitted!')
+                    console.log(data)
+                    //alert('Your post was successfully submitted!')
                 },
                 (err) => {
                     this.setState({

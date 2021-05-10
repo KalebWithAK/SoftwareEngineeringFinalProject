@@ -28,12 +28,15 @@ class Top extends React.Component {
             )*/
         return (
             <div className='top'>
+                <h1>Simple Blog</h1>
+
                 <Navbar />
-                    <div className='loginContainer'>
-                        <Link to='/login'><button className='loginButton'>Login</button></Link>
-                        <Link to='/register'><button className='loginButton'>Register</button></Link>
-                        <button className='loginButton' onClick={ this.handleLogout }>Logout</button>
-                    </div>
+
+                <div className='loginContainer'>
+                    <Link to='/login'><button className='loginButton'>Login</button></Link>
+                    <Link to='/register'><button className='loginButton'>Register</button></Link>
+                    <button className='loginButton' onClick={ this.handleLogout }>Logout</button>
+                </div>
             </div>
         )
     }
