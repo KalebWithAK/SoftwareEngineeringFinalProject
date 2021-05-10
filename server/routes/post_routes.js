@@ -122,7 +122,7 @@ module.exports.create_post = (dbconn) => async (req, res) => {
     // Add style tag if necessary
     if (!!req.body.style) {
         sqlInner += ', style'
-        sqlValus += ', ?'
+        sqlVals += ', ?'
         sqlArgs.push(req.body.style)
     }
 
