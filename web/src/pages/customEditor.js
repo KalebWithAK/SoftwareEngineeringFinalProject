@@ -5,8 +5,10 @@ class CustomEditor extends React.Component {
         super(props)
 
         this.state = {
+            title: '',
             html: '',
             css: '',
+            err: null
         }
     }
 
@@ -14,6 +16,9 @@ class CustomEditor extends React.Component {
         return (
             <div>
                 <h1>Custom Editor</h1>
+
+                <h3>Title</h3>
+                <input onChange={ this.handleTitleChange } />
 
                 <h3>HTML</h3>
                 <textarea className='editorTextarea' onChange={ this.handleHtmlChange } />
@@ -27,6 +32,10 @@ class CustomEditor extends React.Component {
         )
     }
 
+    handleTitleChange = (e) => {
+        this.setState({ title: e.target.value })
+    }
+
     handleHtmlChange = (e) => {
         this.setState({ html: e.target.value })
     }
@@ -36,8 +45,35 @@ class CustomEditor extends React.Component {
     }
 
     submitPost = () => {
-        console.log(`html: ${ this.state.html }, css: ${ this.state.css }`)
-        // TODO - send request to /createPost with html and css
+        const { title, html, css } = this.state
+
+        if (sessionStorage.getItem('session_key')) {
+            fetch('http://localhost:3001/api/post/create', {
+                method: 'PUT',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_key: sessionStorage.getItem('session_key'),
+                    category_id: 99999999,
+                    title,
+                    content: html,
+                    style: css
+                })
+            })
+            .then(response => response.json())
+            .then(
+                (data) => {
+                    alert('Your post was successfully submitted!')
+                },
+                (err) => {
+                    this.setState({
+                        err
+                    })
+                }
+            )
+        } else {
+            this.props.history.push('/login')
+        }
     }
 }
 

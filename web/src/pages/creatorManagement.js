@@ -5,8 +5,11 @@ class CreatorManagement extends React.Component {
     render() {
         return (
             <div>
-                <button><Link to='/templateEditor'>Create Template Post</Link></button>
-                <button><Link to='/customEditor'>Create Custom Post</Link></button>
+                <div>
+                    <button><Link to='/templateEditor'>Create Markdown Post</Link></button>
+                    <button><Link to='/customEditor'>Create Custom Post</Link></button>
+                </div>
+
             </div>
         )
     }

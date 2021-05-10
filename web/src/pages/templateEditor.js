@@ -7,7 +7,7 @@ class TemplateEditor extends React.Component {
         this.state = {
             title: '',
             text: '',
-            image: '',
+            image: null,
             html: '',
             css: ''
         }
@@ -45,26 +45,64 @@ class TemplateEditor extends React.Component {
     }
 
     createPost = () => {
-        const html = `
-        <div id='post'>
-            <h1>${ this.state.title }</h1>
-            <p>${ this.state.text }</p>
-            <img src=${ this.state.image }>
-        </div>
-        `
-        const css = `
+        if (this.state.image) {
+            this.setState({ html: `
+            <div id='post'>
+                <h1>${ this.state.title }</h1>
+                <p>${ this.state.text }</p>
+                <img src=${ this.state.image }>
+            </div>
+            ` })
+        } else {
+            this.setState({ 
+                html: `
+            <div id='post'>
+                <h1>${ this.state.title }</h1>
+                <p>${ this.state.text }</p>
+            </div>
+            ` })
+            }
+
+        this.setState({ css: `
         #post {
             display: flex;
             justify-content: center;
         }
-        `
-
-        this.setState({ html, css })
+        ` })
     }
 
     submitPost = () => {
-        console.log(`html: ${ this.state.html }, css: ${ this.state.css }`)
-        // TODO - send request to /createPost with html and css
+        this.createPost()
+
+        const { title, html, css } = this.state
+        
+        if (sessionStorage.getItem('session_key')) {
+            fetch('http://localhost:3001/api/post/create', {
+                method: 'PUT',
+                mode: 'cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    session_key: sessionStorage.getItem('session_key'),
+                    category_id: 99999999,
+                    title,
+                    content: html,
+                    style: css
+                })
+            })
+            .then(response => response.json())
+            .then(
+                (data) => {
+                    alert('Your post was successfully submitted!')
+                },
+                (err) => {
+                    this.setState({
+                        err
+                    })
+                }
+            )
+        } else {
+            this.props.history.push('/login')
+        }
     }
 }
 
