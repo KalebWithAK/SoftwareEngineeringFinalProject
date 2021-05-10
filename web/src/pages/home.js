@@ -42,7 +42,7 @@ class Home extends React.Component {
             <div className='homeLayout'>
                 <Searchbar search={ this.search.bind(this) } />
                 <div className='previewLayout'>
-                    { posts.map(post => <Preview key={ post.post_id } title={ post.title }  creator={ post.creator_name } content={ post.content_html } id={ post.post_id }/>) }
+                    { posts.map(post => <Preview key={ post.post_id } title={ post.title }  creator={ post.creator_name } content={ post.content } id={ post.post_id }/>) }
                 </div>
             </div>
         )

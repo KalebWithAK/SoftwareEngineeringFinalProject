@@ -29,7 +29,7 @@ class ViewPost extends React.Component {
             (data) => {
                 this.setState({
                     creator: data.creator_name,
-                    content: data.content_html,
+                    content: data.content,
                     title: data.title,
                     loading: false
                 })
