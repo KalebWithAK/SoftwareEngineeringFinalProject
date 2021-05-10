@@ -75,7 +75,7 @@ class TemplateEditor extends React.Component {
         this.createPost()
 
         const { title, html, css } = this.state
-        
+
         if (sessionStorage.getItem('session_key')) {
             fetch('http://localhost:3001/api/post/create', {
                 method: 'PUT',
@@ -83,7 +83,7 @@ class TemplateEditor extends React.Component {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     session_key: sessionStorage.getItem('session_key'),
-                    category_id: 99999999,
+                    category_id: 11,
                     title,
                     content: html,
                     style: css
